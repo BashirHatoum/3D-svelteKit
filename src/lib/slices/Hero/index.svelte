@@ -12,6 +12,13 @@
 	const last_name_letters =$derived(slice.primary.last_name?.split("") ?? "");
 
 	onMount(()=>{
+		const prefersReducedMotion =window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		if(prefersReducedMotion){
+			gsap.to('.name-animation',{opacity: 1});
+			gsap.to('.job-title',{opacity: 1});
+			return;
+		}
+
 		const tl=gsap.timeline();
 		tl.fromTo(".name-animation",{
 				x:-100,

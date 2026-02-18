@@ -12,6 +12,7 @@
 	let { position = [0, 0, 0], geometry = new THREE.IcosahedronGeometry(3), rate = 0.5 } = $props();
 	let meshRef = $state<THREE.Mesh>();
 	
+	let reduceMotionRate=$state(0);
 
 	const soundEffects=[
 		new Audio("/sounds/hit1.ogg"),
@@ -68,14 +69,21 @@
 			});
 		}
 	});
+
+
+	onMount(()=>{
+		const prefersReducedMotion =window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		reduceMotionRate= prefersReducedMotion ? 0 : 1;
+	});
+	let compoundRate = $derived(rate * reduceMotionRate);
 </script>
 
 <Threlte.Group position={position.map((p) => p * 2) as [number, number, number]}>
 	<Float
-		speed={5 * rate}
-		rotationSpeed={5 * rate}
-		rotationIntensity={6 * rate}
-		floatIntensity={5 * rate}
+		speed={5 * compoundRate}
+		rotationSpeed={5 * compoundRate }
+		rotationIntensity={6 * compoundRate}
+		floatIntensity={5 * compoundRate}
 	>
 		
 		<Threlte.Mesh  bind:ref={meshRef} {geometry} material={currentMaterial} interactive onclick={handleClick}></Threlte.Mesh>	
